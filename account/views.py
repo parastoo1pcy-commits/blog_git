@@ -5,10 +5,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated , IsAdminUser
 from rest_framework.views import APIView
 # from drf_spectacular.utils import extend_schema, OpenApiExample
 from django.contrib.auth.hashers import make_password
+from rest_framework.generics import ListCreateAPIView , RetrieveUpdateDestroyAPIView
+from .serializers import UserSerializer
+
 
 from .serializers import *
 
@@ -53,3 +56,16 @@ class LoginView(GenericAPIView):
                 'user': UserSerializer(user).data
             })
         return Response({'error': 'شماره تلفن یا رمز عبور اشتباه است'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserListCreateApi(ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
+
+class UserDetailUpdateDeleteApi(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
